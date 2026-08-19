@@ -22,10 +22,10 @@ DEFAULT_STOPS = 2.0
 DEFAULT_OUTPUT_SIZE = 800
 
 CAVEAT_TEXT = (
-    "Свечение НЕ видно на этом (обычном) мониторе — предпросмотр просто\n"
-    "показывает слегка засвеченные зоны. Реальный эффект проверяется после\n"
-    "загрузки на LinkedIn, на экране с HDR (iPhone/iPad, MacBook, HDR-монитор\n"
-    "Windows с включённым HDR)."
+    "The glow is NOT visible on this (regular) monitor — the preview just\n"
+    "shows slightly brightened zones. The real effect only shows up after\n"
+    "uploading to LinkedIn, on an HDR screen (iPhone/iPad, MacBook, a\n"
+    "Windows HDR monitor with HDR turned on)."
 )
 
 smoothstep = glow_core.smoothstep
@@ -34,7 +34,7 @@ smoothstep = glow_core.smoothstep
 class GlowAvatarApp:
     def __init__(self, root: tk.Tk):
         self.root = root
-        self.root.title("GlowAvatar — светящиеся аватарки")
+        self.root.title("GlowAvatar — glowing avatars")
         self.root.resizable(False, False)
 
         self.photo_arr: np.ndarray | None = None       # WORKING_SIZExWORKING_SIZEx3 uint8
@@ -81,54 +81,54 @@ class GlowAvatarApp:
         side.grid(row=0, column=1, sticky="n")
         r = 0
 
-        ttk.Button(side, text="Открыть фото…", command=self._open_image).grid(
+        ttk.Button(side, text="Open photo…", command=self._open_image).grid(
             row=r, column=0, columnspan=2, sticky="we", pady=(0, 8)
         )
         r += 1
 
-        ttk.Label(side, text="Инструмент", font=("", 9, "bold")).grid(
+        ttk.Label(side, text="Tool", font=("", 9, "bold")).grid(
             row=r, column=0, columnspan=2, sticky="w"
         )
         r += 1
         for value, label in [
-            ("brush", "Кисть (осветлять)"),
-            ("eraser", "Ластик"),
-            ("gradient-linear", "Градиент — линейный"),
-            ("gradient-radial", "Градиент — радиальный"),
-            ("magic-wand", "Волшебная палочка (по цвету)"),
+            ("brush", "Brush (brighten)"),
+            ("eraser", "Eraser"),
+            ("gradient-linear", "Gradient — linear"),
+            ("gradient-radial", "Gradient — radial"),
+            ("magic-wand", "Magic wand (by color)"),
         ]:
             ttk.Radiobutton(side, text=label, value=value, variable=self.tool).grid(
                 row=r, column=0, columnspan=2, sticky="w"
             )
             r += 1
 
-        r = self._add_slider(side, r, "Радиус кисти", self.brush_radius, 4, 200)
+        r = self._add_slider(side, r, "Brush radius", self.brush_radius, 4, 200)
         r = self._add_slider(
-            side, r, "Мягкость края (кисть / палочка)", self.brush_softness, 0.0, 1.0
+            side, r, "Edge softness (brush / wand)", self.brush_softness, 0.0, 1.0
         )
         r = self._add_slider(
-            side, r, "Сила мазка / заливки", self.brush_strength, 0.05, 1.0
+            side, r, "Stroke / fill strength", self.brush_strength, 0.05, 1.0
         )
 
         ttk.Checkbutton(
-            side, text="Инвертировать градиент", variable=self.gradient_invert
+            side, text="Invert gradient", variable=self.gradient_invert
         ).grid(row=r, column=0, columnspan=2, sticky="w", pady=(4, 0))
         r += 1
 
         r = self._add_slider(
-            side, r, "Допуск цвета (волшебная палочка)", self.wand_tolerance, 5, 150, integer=True
+            side, r, "Color tolerance (magic wand)", self.wand_tolerance, 5, 150, integer=True
         )
 
         ttk.Separator(side).grid(row=r, column=0, columnspan=2, sticky="we", pady=8)
         r += 1
 
-        ttk.Label(side, text="Авто-маска по яркости", font=("", 9, "bold")).grid(
+        ttk.Label(side, text="Auto mask by brightness", font=("", 9, "bold")).grid(
             row=r, column=0, columnspan=2, sticky="w"
         )
         r += 1
-        r = self._add_slider(side, r, "Порог яркости", self.auto_threshold, 100, 255, integer=True)
+        r = self._add_slider(side, r, "Brightness threshold", self.auto_threshold, 100, 255, integer=True)
         ttk.Button(
-            side, text="Построить маску по яркости (заменяет текущую)",
+            side, text="Build mask from brightness (replaces current)",
             command=self._apply_auto_mask,
         ).grid(row=r, column=0, columnspan=2, sticky="we")
         r += 1
@@ -139,12 +139,12 @@ class GlowAvatarApp:
         btns = ttk.Frame(side)
         btns.grid(row=r, column=0, columnspan=2, sticky="we")
         ttk.Button(btns, text="Undo (Ctrl+Z)", command=self._undo).pack(side="left", expand=True, fill="x")
-        ttk.Button(btns, text="Инвертировать", command=self._invert_mask).pack(side="left", expand=True, fill="x")
-        ttk.Button(btns, text="Очистить", command=self._clear_mask).pack(side="left", expand=True, fill="x")
+        ttk.Button(btns, text="Invert", command=self._invert_mask).pack(side="left", expand=True, fill="x")
+        ttk.Button(btns, text="Clear", command=self._clear_mask).pack(side="left", expand=True, fill="x")
         r += 1
 
         ttk.Checkbutton(
-            side, text="Показывать маску поверх фото", variable=self.show_mask,
+            side, text="Show mask over photo", variable=self.show_mask,
             command=self._redraw,
         ).grid(row=r, column=0, columnspan=2, sticky="w", pady=(6, 0))
         r += 1
@@ -152,18 +152,18 @@ class GlowAvatarApp:
         ttk.Separator(side).grid(row=r, column=0, columnspan=2, sticky="we", pady=8)
         r += 1
 
-        ttk.Label(side, text="Целевая яркость свечения", font=("", 9, "bold")).grid(
+        ttk.Label(side, text="Target glow brightness", font=("", 9, "bold")).grid(
             row=r, column=0, columnspan=2, sticky="w"
         )
         r += 1
-        r = self._add_slider(side, r, "Стопы экспозиции", self.stops, 0.5, 4.3, on_change=self._update_nits_label)
+        r = self._add_slider(side, r, "Exposure stops", self.stops, 0.5, 4.3, on_change=self._update_nits_label)
         self.nits_label = ttk.Label(side, text="")
         self.nits_label.grid(row=r, column=0, columnspan=2, sticky="w")
         r += 1
-        r = self._add_slider(side, r, "Отбеливание при максимуме", self.whiten, 0.0, 1.0)
+        r = self._add_slider(side, r, "Whiten at peak", self.whiten, 0.0, 1.0)
         ttk.Label(
-            side, text="(0 = цвет не трогаем, только ярче; выше — насыщенный\n"
-                        "цвет физически не светится так же сильно, как белый)",
+            side, text="(0 = color untouched, just brighter; higher — a saturated\n"
+                        "color physically can't glow as hard as white can)",
             foreground="#888", justify="left",
         ).grid(row=r, column=0, columnspan=2, sticky="w")
         r += 1
@@ -173,11 +173,11 @@ class GlowAvatarApp:
 
         row = ttk.Frame(side)
         row.grid(row=r, column=0, columnspan=2, sticky="we")
-        ttk.Label(row, text="Размер выходного файла, px:").pack(side="left")
+        ttk.Label(row, text="Output size, px:").pack(side="left")
         ttk.Entry(row, textvariable=self.output_size, width=6).pack(side="left", padx=4)
         r += 1
 
-        ttk.Button(side, text="Экспортировать…", command=self._export).grid(
+        ttk.Button(side, text="Export…", command=self._export).grid(
             row=r, column=0, columnspan=2, sticky="we", pady=(8, 8)
         )
         r += 1
@@ -203,14 +203,14 @@ class GlowAvatarApp:
 
     def _open_image(self) -> None:
         path = filedialog.askopenfilename(
-            filetypes=[("Изображения", "*.jpg *.jpeg *.png *.bmp *.webp"), ("Все файлы", "*.*")]
+            filetypes=[("Images", "*.jpg *.jpeg *.png *.bmp *.webp"), ("All files", "*.*")]
         )
         if not path:
             return
         try:
             arr = glow_core.load_square_srgb_uint8(path, WORKING_SIZE)
         except Exception as exc:  # noqa: BLE001
-            messagebox.showerror("Ошибка", f"Не удалось открыть изображение:\n{exc}")
+            messagebox.showerror("Error", f"Couldn't open the image:\n{exc}")
             return
         self.source_path = path
         self.photo_arr = arr
@@ -220,7 +220,7 @@ class GlowAvatarApp:
 
     def _require_image(self) -> bool:
         if self.photo_arr is None:
-            messagebox.showinfo("Нет фото", "Сначала открой фото.")
+            messagebox.showinfo("No photo", "Open a photo first.")
             return False
         return True
 
@@ -392,7 +392,7 @@ class GlowAvatarApp:
 
     def _update_nits_label(self, *_args) -> None:
         nits = glow_core.target_nits_for_mask_value(1.0, self.stops.get())
-        self.nits_label.config(text=f"пик свечения ≈ {nits:.0f} нит")
+        self.nits_label.config(text=f"peak glow ≈ {nits:.0f} nits")
 
     # -------------------------------------------------------------- export
 
@@ -404,7 +404,7 @@ class GlowAvatarApp:
             if size <= 0:
                 raise ValueError
         except ValueError:
-            messagebox.showerror("Ошибка", "Размер выходного файла должен быть положительным числом.")
+            messagebox.showerror("Error", "Output size must be a positive number.")
             return
 
         path = filedialog.asksaveasfilename(
@@ -421,13 +421,13 @@ class GlowAvatarApp:
                 whiten=self.whiten.get(),
             )
         except Exception as exc:  # noqa: BLE001
-            messagebox.showerror("Ошибка экспорта", str(exc))
+            messagebox.showerror("Export error", str(exc))
             return
 
         messagebox.showinfo(
-            "Готово",
-            f"Сохранено: {path}\n\nСвечение будет видно только после загрузки на "
-            "LinkedIn и только на HDR-экране.",
+            "Done",
+            f"Saved: {path}\n\nThe glow will only be visible after uploading to "
+            "LinkedIn, and only on an HDR screen.",
         )
 
 
