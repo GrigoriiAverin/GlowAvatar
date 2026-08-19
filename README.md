@@ -92,6 +92,9 @@ SMPTE ST 2084, плюс ICC v4 теги `cicp`+`lumi`, без которых Chr
 
 Если пригодилось — можно закинуть на кофе: **[Boosty](https://boosty.to/cynicplay)**
 
+<img src="cynicplay-donate.png" alt="QR-код на Boosty" width="160">
+
+
 ## Лицензия
 
 MIT, см. [LICENSE](LICENSE).
